@@ -3,6 +3,7 @@ import sys
 import http.client
 import requests
 import json
+from pprint import pprint
 
 msg = "new message"
 capitalized = msg.capitalize()
@@ -59,10 +60,16 @@ for chunk in read_in_chunks(f):
     headers['Content-length'] = str(fileSize)
     headers['Content-Range'] = 'bytes %s-%s/%s' % (index, offset, fileSize)
     index = httpOffset
-    ## try:
-    ##    r = requests.put(url, data=chunk, headers=headers)
-    print("r: %s, Content-Range: %s" % ("1",headers['Content-Range']))
-    ## except Exception, e:
-    ##    print e
+    try:
+        payload = {'file_id': '1234'}
+        multipart_form_data = {
+            'file': (filename, chunk)            
+        }
+        r = requests.post("http://httpbin.org/post", files=multipart_form_data, data=payload)
+        ## r = requests.post("http://httpbin.org/post", files=multipart_form_data, data=payload, headers=headers)
+        ## print("r: %s, Content-Range: %s" % (r,headers['Content-Range']))
+        pprint(r.json()['headers'])
+    except Exception as e:
+        print(e)
 
 ## f.close()
