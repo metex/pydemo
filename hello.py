@@ -65,10 +65,10 @@ for chunk in read_in_chunks(f):
         multipart_form_data = {
             'file': (filename, chunk)            
         }
-        r = requests.post("http://httpbin.org/post", files=multipart_form_data, data=payload)
+        r = requests.post(url="http://httpbin.org/post", files=multipart_form_data, data=payload)
         ## r = requests.post("http://httpbin.org/post", files=multipart_form_data, data=payload, headers=headers)
         ## print("r: %s, Content-Range: %s" % (r,headers['Content-Range']))
-        pprint(r.json()['headers'])
+        pprint(r.json())
     except Exception as e:
         print(e)
 
