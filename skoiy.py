@@ -39,7 +39,7 @@ r2 = requests.post(url=loginUrl, data=payload, cookies=r1.cookies)
 
 
 r4 = requests.get(url=chooseAccountUrl)
-soup = BeautifulSoup(r4.text, 'lxml')
+soup = BeautifulSoup(r2.text, 'lxml')
 meta = soup.find_all("meta")
 csrfToken = results.attrs['content'];
 print(csrfToken)
@@ -58,8 +58,8 @@ merged_list = merge(names, tokens)
 ## txt = input("Choose your account please: ")
 ## print("Is this what you just said? ", txt)
 payload = { 'account_token' : '5nff7dqpce5u4moq', '_token': csrfToken}
-r3 = requests.post(url=chooseAccountUrl, data=payload, cookies=r4.cookies)
-print(r3)
+r3 = requests.post(url=chooseAccountUrl, data=payload, cookies=r2.cookies)
+print(r3.text)
 
 ## <meta name="csrf-token" content="PalnibjMJNASZ8eQC8KrNzXYAfMj7E6xvc4yp75i">
 ## <input type="hidden" name="_token" value="PalnibjMJNASZ8eQC8KrNzXYAfMj7E6xvc4yp75i">
