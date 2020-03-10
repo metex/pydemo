@@ -5,28 +5,34 @@ from datetime import datetime
 
 def main():
 
-    email = input("Please enter your email: ")
-    password = input("Please enter your password: ")
+    # email = input("Please enter your email: ")
+    # password = input("Please enter your password: ")
 
     email = "bgomes@youongroup.com"
     password = "1234567"
 
     # Generate the cookie hash
     m = hashlib.md5()
-    m.update((email+password).encode('UTF-8'))
+    strToHash = (email+password).encode('UTF-8')
+    m.update(strToHash)
     checksum = m.hexdigest()
-    print(checksum)
-
-    # Load session
-    with open('storage/cookies', 'rb') as f:
-        s.cookies.update(pickle.load(f))
-
-    expires = next(x for x in s.cookies if x.name == 'sts').expires
-    dt_object = datetime.fromtimestamp(expires)
-    print(dt_object)
+    
+    # TODO Check if file exists and is not expired, then load the session
+    try:
+        with open('storage/' + checksum, 'rb') as f:
+            cookie = pickle.load(f)
+            print(cookie)
+            expires = next(x for x in cookie if x.name == 'sts').expires
+            is_expired = next(x for x in cookie if x.name == 'sts').is_expired()
+            dt_object = datetime.fromtimestamp(expires)
+            print(dt_object)
+            print(is_expired)
+            # s.cookies.update(pickle.load(f))
+    except FileNotFoundError:          
+        print("oops")
 
     # r1 = tryToLogin("bgomes@youongroup.com", "1234567")
-    # print(r1.text)
+    # print(r1)
     # expires = next(x for x in r1.cookies if x.name == 'sts').expires
     # is_expired = next(x for x in r1.cookies if x.name == 'sts').is_expired()
     # print(is_expired)
@@ -39,7 +45,7 @@ def main():
     # getVideos(r2)
 
     # Save session    
-    # with open('storage/hash', 'wb') as f:
+    # with open('storage/' + checksum, 'wb') as f:
     #    pickle.dump(s.cookies, f)
 
     # Start with an empty list. You can 'seed' the list with
