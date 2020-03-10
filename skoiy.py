@@ -1,4 +1,5 @@
 import requests
+import pickle
 from urllib.request import urlopen
 from bs4 import BeautifulSoup
 
@@ -57,7 +58,10 @@ def getVideos(r):
     # print(r1.json())
 
 r1 = tryToLogin("bgomes@youongroup.com", "1234567")
-
+print(s)
+expires = next(x for x in r1.cookies if x.name == 'sts').expires
+is_expired = next(x for x in r1.cookies if x.name == 'sts').is_expired()
+print(is_expired)
 # accounts = listAccounts(r1)
 
 # token = "5nff7dqpce5u4moq"
@@ -69,7 +73,7 @@ r1 = tryToLogin("bgomes@youongroup.com", "1234567")
 names = []
 
 # Set new_name to something other than 'quit'.
-new_name = ''
+new_name = 'quit'
 
 while new_name != 'quit':
     # Ask the user for a name.
