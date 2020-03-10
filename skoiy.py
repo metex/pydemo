@@ -20,14 +20,17 @@ def main():
     # TODO Check if file exists and is not expired, then load the session
     try:
         with open('storage/' + checksum, 'rb') as f:
-            cookie = pickle.load(f)
-            print(cookie)
-            expires = next(x for x in cookie if x.name == 'sts').expires
-            is_expired = next(x for x in cookie if x.name == 'sts').is_expired()
+            requestsCookieJar = pickle.load(f)  # Returns a RequestsCookieJar instance
+            print(requestsCookieJar)
+            cookie = next(x for x in requestsCookieJar if x.name == 'sts')  # Returns a Cookie instance
+            expires = cookie.expires
+            is_expired = cookie.is_expired()
             dt_object = datetime.fromtimestamp(expires)
             print(dt_object)
             print(is_expired)
-            # s.cookies.update(pickle.load(f))
+            # if not is_expired:
+            #    s.cookies.update(pickle.load(f))
+
     except FileNotFoundError:          
         print("oops")
 
