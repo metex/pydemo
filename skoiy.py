@@ -1,56 +1,67 @@
-import pickle
-import hashlib
-from lib.skoiy import *
-from datetime import datetime
+import sys
+from lib.lib import *
 
 def main():
 
-    # email = input("Please enter your email: ")
-    # password = input("Please enter your password: ")
-
     email = "bgomes@youongroup.com"
     password = "1234567"
+    is_logged_in = False
 
-    # Generate the cookie hash
-    m = hashlib.md5()
-    strToHash = (email+password).encode('UTF-8')
-    m.update(strToHash)
-    checksum = m.hexdigest()
+    # email = input("Please enter your email: ")
+    # password = input("Please enter your password: ")
     
-    # TODO Check if file exists and is not expired, then load the session
-    try:
-        with open('storage/' + checksum, 'rb') as f:
-            requestsCookieJar = pickle.load(f)  # Returns a RequestsCookieJar instance
-            print(requestsCookieJar)
-            cookie = next(x for x in requestsCookieJar if x.name == 'sts')  # Returns a Cookie instance
-            expires = cookie.expires
-            is_expired = cookie.is_expired()
-            dt_object = datetime.fromtimestamp(expires)
-            print(dt_object)
-            print(is_expired)
-            # if not is_expired:
-            #    s.cookies.update(pickle.load(f))
+    key = cookie_id(email, password)
+    
+    requestsCookieJar = load_cookie(key)
+    if( isinstance(requestsCookieJar, requests.cookies.RequestsCookieJar) ):
+        is_expired = cookie_is_expired(requestsCookieJar)
+        
+        # If cookie is not expired than update cookie
+        if not is_expired:
+            update_cookie(key, requestsCookieJar)
+        else:
+            while( is_expired ):
+                # TODO Show login prompt
+                print("Show login form")
 
-    except FileNotFoundError:          
-        print("oops")
+                # TODO Try to login
+                # email = input("Please enter your email: ")
+                # password = input("Please enter your password: ")
+                email = "bgomes@youongroup.com"
+                password = "1234567"
 
-    # r1 = tryToLogin("bgomes@youongroup.com", "1234567")
+                # r = login(email, password)
+                # print(r)
+
+                ## TODO Test if success of r
+                # accounts = listAccounts(r)
+
+                # requestsCookieJar = r.cookies
+
+                # Update the cookie
+                # update_cookie(key, r.cookies)
+
+
+    else:
+        print("Not instance, than show loggin form")
+
+    # r1 = login("bgomes@youongroup.com", "1234567")
     # print(r1)
     # expires = next(x for x in r1.cookies if x.name == 'sts').expires
     # is_expired = next(x for x in r1.cookies if x.name == 'sts').is_expired()
     # print(is_expired)
 
-    # accounts = listAccounts(tryToLogin(email, password))
+    # accounts = listAccounts(login(email, password))
     # print(accounts)
 
     # token = "5nff7dqpce5u4moq"
     # r2 = chooseAccount(r1, token)
-    # getVideos(r2)
 
-    # Save session    
-    # with open('storage/' + checksum, 'wb') as f:
-    #    pickle.dump(s.cookies, f)
-
+    # Get videos
+    # print(s.cookies)
+    r = getVideos()
+    print(r.json())
+    
     # Start with an empty list. You can 'seed' the list with
     # some predefined values if you like.
     names = []
@@ -67,7 +78,7 @@ def main():
             names.append(new_name)
 
     # Show that the name has been added to the list.
-    print(names)
+    # print(names)
 
 if __name__== "__main__":
   main()
